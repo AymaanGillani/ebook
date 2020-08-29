@@ -53,6 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _getFilesList() async {
     setState(() {
       file = io.Directory("/storage/emulated/0/").listSync();
+      onlyFiles();
     });
   }
 
