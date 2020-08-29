@@ -46,13 +46,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    _getFilesList();
+    permission();
     super.initState();
   }
 
   void _getFilesList() async {
-    permission();
-    downloads = (await getExternalStorageDirectory()).path;
     setState(() {
       file = io.Directory("/storage/emulated/0/").listSync();
       print(downloads);
@@ -66,6 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
         Permission.storage,
       ].request();
     }
+    _getFilesList();
   }
 
   @override
