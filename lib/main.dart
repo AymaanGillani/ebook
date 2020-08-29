@@ -1,8 +1,7 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'dart:io';
-
-import 'package:path/path.dart';
+import 'dart:io' as io;
+import 'package:simple_permissions/simple_permissions.dart';
+import 'package:path_provider/path_provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -42,34 +41,21 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<File> myFiles;
-  String filenames;
-
-  void _getFiles() async {
-    try {
-      List<File> files = await FilePicker.getMultiFile(
-        type: FileType.custom,
-        allowedExtensions: ['epub'],
-      );
-      myFiles = files;
-    } catch (e) {
-      print(e);
-    }
-    _getfilenames();
-  }
-
-  void _getfilenames(){
-    String fileNames="";
-    myFiles.forEach((element) {
-      fileNames=fileNames+"/n"+basename(element.path);
-    });
-    filenames=fileNames;
-  }
+  String downloads;
+  List file = new List();
 
   @override
   void initState() {
-    _getFiles();
+    // TODO: implement initState
+    _getFilesList();
     super.initState();
+  }
+
+  void _getFilesList() async {
+    downloads = (await getDownloadsDirectory()).path;
+    setState(() {
+      file = io.Directory(downloads).listSync();
+    });
   }
 
   @override
@@ -78,7 +64,13 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(),
       body: Container(
         child: Center(
-          child:filenames!=null? Text(filenames):Icon(Icons.hourglass_empty),
+          child: Expanded(
+            child: ListView.builder(
+                itemCount: file.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Text(file[index].toString());
+                }),
+          ),
         ),
       ),
     );
