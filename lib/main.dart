@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:io' as io;
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() {
   runApp(MyApp());
@@ -50,11 +51,21 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _getFilesList() async {
+    permission();
     downloads = (await getExternalStorageDirectory()).path;
     setState(() {
       file = io.Directory("/storage/emulated/0/").listSync();
       print(downloads);
     });
+  }
+
+  void permission() async {
+    var status = await Permission.storage.status;
+    if (status.isUndetermined) {
+      Map<Permission, PermissionStatus> statuses = await [
+        Permission.storage,
+      ].request();
+    }
   }
 
   @override
