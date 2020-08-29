@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:io' as io;
-import 'package:simple_permissions/simple_permissions.dart';
 import 'package:path_provider/path_provider.dart';
 
 void main() {
@@ -46,15 +45,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     _getFilesList();
     super.initState();
   }
 
   void _getFilesList() async {
-    downloads = (await getDownloadsDirectory()).path;
+    downloads = (await getExternalStorageDirectory()).path;
     setState(() {
-      file = io.Directory(downloads).listSync();
+      file = io.Directory("/storage/emulated/0/").listSync();
+      print(downloads);
     });
   }
 
@@ -63,14 +62,17 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(),
       body: Container(
-        child: Center(
-          child: Expanded(
-            child: ListView.builder(
-                itemCount: file.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Text(file[index].toString());
-                }),
-          ),
+        height: MediaQuery.of(context).size.height,
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                  itemCount: file.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Text(file[index].toString());
+                  }),
+            ),
+          ],
         ),
       ),
     );
