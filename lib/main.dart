@@ -41,8 +41,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String downloads;
   List file = new List();
+  List filesOnly = new List();
 
   @override
   void initState() {
@@ -53,8 +53,31 @@ class _MyHomePageState extends State<MyHomePage> {
   void _getFilesList() async {
     setState(() {
       file = io.Directory("/storage/emulated/0/").listSync();
-      print(downloads);
     });
+  }
+
+  void onlyFiles() {
+    int i = 0;
+    while (file.isNotEmpty) {
+      io.FileSystemEntity entity = file[i % file.length];
+      i = i + 1;
+      if (entity is io.Link) {
+        file.remove(entity);
+      } else if (entity is io.File) {
+        file.remove(entity);
+        if (entity.path.split("/").last.split(".").last.toUpperCase() ==
+            "EPUB") {
+          filesOnly.add(entity);
+        }
+      } else if (entity is io.Directory) {
+        try {
+          file.addAll(entity.listSync());
+        } catch (ex) {
+          print('catch: ${entity.path}, $ex');
+          file.remove(entity);
+        }
+      }
+    }
   }
 
   void permission() async {
