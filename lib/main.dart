@@ -100,9 +100,9 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             Expanded(
               child: ListView.builder(
-                  itemCount: file.length,
+                  itemCount: filesOnly.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return Text(file[index].toString());
+                    return Text(filesOnly[index].toString());
                   }),
             ),
           ],
